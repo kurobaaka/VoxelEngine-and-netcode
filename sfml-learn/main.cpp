@@ -1,17 +1,9 @@
+#include <iostream>
 #include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
+#include <vector>
+
+#include <NetworkServer.h>
 
 using namespace sf;
-
-int main() {
-	RenderWindow win(VideoMode(900, 900), "SFML Window");
-
-	while(win.isOpen()) {
-		Event ev;
-		while (win.pollEvent(ev)) {
-			if (ev.type == Event::Closed)
-				win.close();
-		}
-		win.clear();
-		win.display();
-	}
-}
+using namespace std;
