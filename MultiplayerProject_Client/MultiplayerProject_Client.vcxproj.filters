@@ -15,16 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MainServer.cpp">
+    <ClCompile Include="MultiplayerProject_Client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NetwokServer.cpp">
+    <ClCompile Include="NetworkClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="NetworkServer.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="NetworkClient.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

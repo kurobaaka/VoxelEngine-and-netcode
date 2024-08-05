@@ -3,7 +3,7 @@
 NetworkServer::NetworkServer()
 {
 	//listener.setBlocking(true);
-
+	
 
 }
 
@@ -32,7 +32,7 @@ Socket::Status NetworkServer::acceptIncomingConnection()
 	if (regStep == 0)
 	{
 		if (listener.isBlocking()) listener.setBlocking(false);
-
+		
 
 		//cout << "Port -" << listener.getLocalPort() << endl;
 		if (listener.accept(regSocket) == Socket::Status::Done)
@@ -212,7 +212,7 @@ Socket::Status NetworkServer::receiveData(unsigned int& receivedClientIndex)
 		if (clientsVec[i].dataSocket->receive(clientsVec[i].rDataPacket, tempIp, tempPort) == Socket::Status::Done)
 		{
 			receivedClientIndex = i;
-
+			
 			return Socket::Status::Done;
 		}
 	}

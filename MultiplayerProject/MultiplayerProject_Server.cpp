@@ -14,7 +14,7 @@ NetworkServer netS;
 int main()
 {
 	netS.init();
-
+	
 
 	Packet packet;
 	packet << "DATA";
