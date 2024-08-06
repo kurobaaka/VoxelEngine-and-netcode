@@ -71,7 +71,7 @@ void addPlayer(Texture& t_player, Font& font, string clientName);
 
 int main()
 {
-	RenderWindow window(sf::VideoMode(400, 400), "SFML works!");
+	RenderWindow window(sf::VideoMode(400, 400), "Client works!");
 
 
 	Texture t_player;

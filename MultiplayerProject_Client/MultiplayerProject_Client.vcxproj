@@ -151,6 +151,12 @@
   <ItemGroup>
     <ClInclude Include="NetworkClient.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="indianajones.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="8bitOperatorPlus-Regular.ttf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
