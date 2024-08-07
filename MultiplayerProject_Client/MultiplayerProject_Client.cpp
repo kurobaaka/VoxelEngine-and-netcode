@@ -1,56 +1,59 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
-#include <SFML/Network.hpp>
+#include <SFML/OpenGL.hpp>
 #include <vector>
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GLFW/glfw3.h>
 
 #include "NetworkClient.h"
 
 using namespace sf;
 using namespace std;
 
-
 class Player
 {
-	Text t;
-	Sprite body, netGhost;
-	bool possesed = false;
+    Text t;
+    Sprite body;
+    bool possesed = false;
 public:
-	string name;
+    string name;
 
-	Player(bool possesed = false):possesed(possesed) {};
-	void load(Texture& texture, Font& font)
-	{
-		body.setTexture(texture);
-		body.setTextureRect(IntRect(0, 0, texture.getSize().x / 4, texture.getSize().y / 4));
-		body.setScale(2, 2);
-		if (!possesed) body.setColor(Color::Red);
-		netGhost.setTexture(texture);
-		//name = playerName;
+    Player(bool possesed = false) : possesed(possesed) {};
 
-		t.setFont(font);
-		t.setString(name);
-		t.setFillColor(sf::Color::Red);
-		t.setPosition(body.getGlobalBounds().width / 2 - t.getGlobalBounds().width / 2, body.getPosition().y - t.getGlobalBounds().height);
-	};
-	void setPosition(Vector2f newPos)
-	{
-		body.setPosition(newPos);
-		t.setPosition(newPos.x + body.getGlobalBounds().width / 2 - t.getGlobalBounds().width / 2, body.getPosition().y - t.getGlobalBounds().height);
-	};
-	void move(Vector2f normalizedMovementVec, Time cycleTime)
-	{
-		body.move({ normalizedMovementVec.x * 50 * cycleTime.asSeconds(), normalizedMovementVec.y * 50 * cycleTime.asSeconds() });
-		t.move({ normalizedMovementVec.x * 50 * cycleTime.asSeconds(), normalizedMovementVec.y * 50 * cycleTime.asSeconds() });
-	};
-	void draw(RenderWindow& window)
-	{
-		//window.draw(netGhost);
-		window.draw(body);
-		window.draw(t);
-	};
+    void load(Texture& texture, Font& font)
+    {
+        body.setTexture(texture);
+        body.setTextureRect(IntRect(0, 0, texture.getSize().x / 4, texture.getSize().y / 4));
+        body.setScale(2, 2);
+        if (!possesed) body.setColor(Color::Red);
 
-	bool isPossesed() { return possesed; };
-	Vector2f getPos() { return body.getPosition(); };
+        t.setFont(font);
+        t.setString(name);
+        t.setFillColor(sf::Color::Red);
+        t.setPosition(body.getGlobalBounds().width / 2 - t.getGlobalBounds().width / 2, body.getPosition().y - t.getGlobalBounds().height);
+    }
+
+    void setPosition(Vector2f newPos)
+    {
+        body.setPosition(newPos);
+        t.setPosition(newPos.x + body.getGlobalBounds().width / 2 - t.getGlobalBounds().width / 2, body.getPosition().y - t.getGlobalBounds().height);
+    }
+
+    void move(Vector2f normalizedMovementVec, Time cycleTime)
+    {
+        body.move({ normalizedMovementVec.x * 50 * cycleTime.asSeconds(), normalizedMovementVec.y * 50 * cycleTime.asSeconds() });
+        t.move({ normalizedMovementVec.x * 50 * cycleTime.asSeconds(), normalizedMovementVec.y * 50 * cycleTime.asSeconds() });
+    }
+
+    void draw(RenderWindow& window)
+    {
+        window.draw(body);
+        window.draw(t);
+    }
+
+    bool isPossesed() const { return possesed; }
+    Vector2f getPos() const { return body.getPosition(); }
 };
 
 vector<Player> playersVec;
@@ -69,137 +72,211 @@ Player player(true);
 void getUserInputData(string& playerName);
 void addPlayer(Texture& t_player, Font& font, string clientName);
 
+void drawPlane()
+{
+    glBegin(GL_QUADS);
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glVertex3f(-10.0f, 0.0f, -10.0f);
+    glVertex3f(10.0f, 0.0f, -10.0f);
+    glVertex3f(10.0f, 0.0f, 10.0f);
+    glVertex3f(-10.0f, 0.0f, 10.0f);
+    glEnd();
+}
+
+void drawCube(float x, float y, float z)
+{
+    glPushMatrix();
+    glTranslatef(x, y, z);
+    glBegin(GL_QUADS);
+
+    // Front face
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glVertex3f(-0.5f, -0.5f, 0.5f);
+    glVertex3f(0.5f, -0.5f, 0.5f);
+    glVertex3f(0.5f, 0.5f, 0.5f);
+    glVertex3f(-0.5f, 0.5f, 0.5f);
+
+    // Back face
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glVertex3f(-0.5f, -0.5f, -0.5f);
+    glVertex3f(-0.5f, 0.5f, -0.5f);
+    glVertex3f(0.5f, 0.5f, -0.5f);
+    glVertex3f(0.5f, -0.5f, -0.5f);
+
+    // Left face
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glVertex3f(-0.5f, -0.5f, -0.5f);
+    glVertex3f(-0.5f, -0.5f, 0.5f);
+    glVertex3f(-0.5f, 0.5f, 0.5f);
+    glVertex3f(-0.5f, 0.5f, -0.5f);
+
+    // Right face
+    glColor3f(1.0f, 1.0f, 0.0f);
+    glVertex3f(0.5f, -0.5f, 0.5f);
+    glVertex3f(0.5f, -0.5f, -0.5f);
+    glVertex3f(0.5f, 0.5f, -0.5f);
+    glVertex3f(0.5f, 0.5f, 0.5f);
+
+    // Top face
+    glColor3f(1.0f, 0.0f, 1.0f);
+    glVertex3f(-0.5f, 0.5f, 0.5f);
+    glVertex3f(0.5f, 0.5f, 0.5f);
+    glVertex3f(0.5f, 0.5f, -0.5f);
+    glVertex3f(-0.5f, 0.5f, -0.5f);
+
+    // Bottom face
+    glColor3f(0.0f, 1.0f, 1.0f);
+    glVertex3f(-0.5f, -0.5f, -0.5f);
+    glVertex3f(0.5f, -0.5f, -0.5f);
+    glVertex3f(0.5f, -0.5f, 0.5f);
+    glVertex3f(-0.5f, -0.5f, 0.5f);
+
+    glEnd();
+    glPopMatrix();
+}
+
+void drawPlayerName(RenderWindow& window, const Player& p, Font& font)
+{
+    Text nameText;
+    nameText.setFont(font);
+    nameText.setString(p.name);
+    nameText.setFillColor(Color::White);
+    nameText.setCharacterSize(24);
+    nameText.setPosition(p.getPos().x, 2.0f); // Установите Y на 2.0f или выше
+    window.draw(nameText);
+}
+
 int main()
 {
-	RenderWindow window(sf::VideoMode(400, 400), "Client works!");
+    cout << "Starting application..." << endl;
 
+    RenderWindow window(sf::VideoMode(800, 600), "Client works!");
 
-	Texture t_player;
-	t_player.loadFromFile("indianajones.png");
-	Font font;
-	font.loadFromFile("8bitOperatorPlus-Regular.ttf");
+    Texture t_player;
+    if (!t_player.loadFromFile("indianajones.png"))
+    {
+        cerr << "Error loading texture!" << endl;
+        return -1;
+    }
 
-	
-	getUserInputData(player.name);
-	player.load(t_player, font);
+    Font font;
+    if (!font.loadFromFile("8bitOperatorPlus-Regular.ttf"))
+    {
+        cerr << "Error loading font!" << endl;
+        return -1;
+    }
 
+    getUserInputData(player.name);
+    player.load(t_player, font);
 
+    netC.init();
+    netC.registerOnServer(S_Ip, S_port, player.name);
 
+    vector<string> namesVec;
+    netC.receiveConnectedClientsNames(namesVec);
+    for (const auto& name : namesVec)
+    {
+        addPlayer(t_player, font, name);
+    }
 
-	netC.init();
-	netC.registerOnServer(S_Ip, S_port, player.name);
+    Packet receivedDataPacket;
+    Packet sendDataPacket;
 
-	vector<string> namesVec;
-	netC.receiveConnectedClientsNames(namesVec);
-	for (int i = 0; i < namesVec.size(); i++)
-	{
-		addPlayer(t_player, font, namesVec[i]);
-	}
+    window.setActive(true);
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(0.5f, 0.7f, 1.0f, 1.0f);
 
-	Packet receivedDataPacket;
-	Packet sendDataPacket;
+    while (window.isOpen())
+    {
+        cycleTime = cycleTimer.restart();
 
+        // Обработка событий
+        Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == Event::Closed)
+                window.close();
+        }
 
-	
-	while (window.isOpen())
-	{
-		cycleTime = cycleTimer.restart();
+        // Обработка сетевых событий
+        if (netC.receiveData(receivedDataPacket, S_Ip, S_port) == Socket::Status::Done)
+        {
+            if (receivedDataPacket.getDataSize() > 0)
+            {
+                string s;
+                if (receivedDataPacket >> s)
+                {
+                    if (s == "DATA")
+                    {
+                        while (!receivedDataPacket.endOfPacket())
+                        {
+                            float x, y;
+                            receivedDataPacket >> s >> x >> y;
 
-		if (netC.receiveData(receivedDataPacket, S_Ip, S_port) == Socket::Status::Done)
-		{
-			if (receivedDataPacket.getDataSize() > 0)
-			{
-				string s;
-				if (receivedDataPacket >> s)
-				{
-					if (s == "NEW")
-					{
-						if (receivedDataPacket >> s)
-						{
-							if (s != clientName)
-							{
-								addPlayer(t_player, font, s);
-								cout << "New player connected: " << playersVec.back().name << endl;
-							}
-						}
-					}
-					if (s == "DATA")
-					{
-						while (!receivedDataPacket.endOfPacket())
-						{
-							float x, y;
-							receivedDataPacket >> s;
-							receivedDataPacket >> x;
-							receivedDataPacket >> y;
-							for (int i = 0; i < playersVec.size(); i++)
-							{
-								if (s == playersVec[i].name)
-									playersVec[i].setPosition({ x, y });
-							}
-						}
-					}
-				}
-			}
-		}
+                            // Проверка, существует ли игрок в векторе
+                            bool found = false;
+                            for (auto& p : playersVec)
+                            {
+                                if (p.name == s)
+                                {
+                                    p.setPosition({ x, y });
+                                    found = true;
+                                    break;
+                                }
+                            }
 
-		sendDataPacket.clear();
-		sendDataPacket << "DATA" << player.getPos().x << player.getPos().y;
-		netC.sendData(sendDataPacket);
+                            // Если игрок не найден, добавляем его
+                            if (!found)
+                            {
+                                Player newPlayer;
+                                newPlayer.name = s;
+                                newPlayer.setPosition({ x, y });
+                                newPlayer.load(t_player, font);
+                                playersVec.push_back(newPlayer);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        glLoadIdentity();
 
+        // Установка позиции камеры
+        gluLookAt(0.0f, 1.0f, 5.0f,
+            0.0f, 1.0f, 0.0f,
+            0.0f, 1.0f, 0.0f);
 
+        drawPlane();
 
-		Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-				window.close();
-		}
+        // Отрисовка игрока
+        player.draw(window);
+        for (const auto& p : playersVec)
+        {
+            drawCube(p.getPos().x, 0.5f, p.getPos().y);
+            drawPlayerName(window, p, font);
+        }
 
-		if (window.hasFocus())
-		{
-			if (Keyboard::isKeyPressed(Keyboard::W))
-				player.move({ 0, -1 }, cycleTime);
-			if (Keyboard::isKeyPressed(Keyboard::A))
-				player.move({ -1, 0 }, cycleTime);
-			if (Keyboard::isKeyPressed(Keyboard::S))
-				player.move({ 0, 1 }, cycleTime);
-			if (Keyboard::isKeyPressed(Keyboard::D))
-				player.move({ 1, 0 }, cycleTime);
-		}
+        window.display();
+    }
 
-		window.clear();
-		
-		for (int i = 0; i < playersVec.size(); i++)
-		{
-			playersVec[i].draw(window);
-		}
-
-		player.draw(window);
-
-		window.display();
-	}
-
-	return 0;
-};
+    return 0;
+}
 
 void getUserInputData(string& playerName)
 {
-	//cout << "Enter server IP: ";
-	//cin >> serverIp;
-	S_Ip = "localhost";
-	cout << endl;
-	cout << "Enter server registration port: ";
-	cin >> S_port;
-	cout << endl;
-	cout << "Enter name: ";
-	cin >> playerName;
-};
+    S_Ip = "localhost"; // Example IP
+    cout << "Enter server registration port: ";
+    cin >> S_port;
+    cout << "Enter name: ";
+    cin >> playerName;
+}
 
 void addPlayer(Texture& t_player, Font& font, string clientName)
 {
-	Player p;
-	playersVec.push_back(p);
-	playersVec.back().name = clientName;
-	playersVec.back().load(t_player, font);
-};
+    Player p;
+    playersVec.push_back(p);
+    playersVec.back().name = clientName;
+    playersVec.back().load(t_player, font);
+}

@@ -124,8 +124,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\includes\glfw-3.4.bin.WIN64;C:\includes\glew-2.1.0\lib;C:\includes\SFML-2.6.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-window-d.lib;sfml-graphics-d.lib;sfml-network-d.lib;sfml-system-d.lib;sfml-network.lib;sfml-graphics.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\includes\glfw-3.4.bin.WIN64\lib;C:\includes\glew-2.1.0\lib\Release\x64;C:\includes\SFML-2.6.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;glfw3dll.lib;glfw3.lib;glew32.lib;sfml-graphics.lib;sfml-window.lib;sfml-window-d.lib;sfml-graphics-d.lib;sfml-network-d.lib;sfml-system-d.lib;sfml-network.lib;sfml-graphics.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -147,7 +147,6 @@
   <ItemGroup>
     <ClCompile Include="MultiplayerProject_Client.cpp" />
     <ClCompile Include="NetworkClient.cpp" />
-    <ClCompile Include="VoxelClient.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NetworkClient.h" />
